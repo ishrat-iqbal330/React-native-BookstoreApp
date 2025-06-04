@@ -9,7 +9,6 @@ const NewBook = async (req, res) => {
     }
 
     // upload image to cloudinary
-
     const result = await cloudinary.uploader.upload(image);
     const imageURL = result.secure_url;
 
@@ -18,7 +17,7 @@ const NewBook = async (req, res) => {
       caption,
       ratings,
       image: imageURL,
-      user: req.user._id, // Assuming req.user is set by an authentication middleware
+      user: req.user._id,
     });
     await newBook.save();
     res.status(201).json({
@@ -27,8 +26,72 @@ const NewBook = async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding book:", error);
-    res.status(500).json({ message: "" });
+    res.status(500).json({ message: "Error adding book" });
   }
 };
 
-export { NewBook };
+const AllBooks = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const books = await Book.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("user", "userName profileImage");
+
+    const totalBooks = await Book.countDocuments();
+    res.json({
+      books,
+      currentPage: page,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit),
+    });
+  } catch (error) {
+    console.error("Error fetching books:", error);
+    res.status(500).json({ message: "Error fetching books" });
+  }
+};
+
+const DeleteBook = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    if (book.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    // Delete image from cloudinary
+    if (book.image && book.image.includes("cloudinary")) {
+      try {
+        const publicId = book.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      } catch (error) {
+        console.error("Error deleting image from cloudinary:", error);
+      }
+    }
+
+    await book.deleteOne();
+    res.json({ message: "Book deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const UserBooks = async (req, res) => {
+  try {
+    const books = await Book.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.json(books);
+  } catch (error) {
+    console.log("Error fetching user books:", error);
+
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export { NewBook, AllBooks, DeleteBook , UserBooks };
