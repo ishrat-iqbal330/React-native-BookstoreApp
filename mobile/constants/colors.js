@@ -1,15 +1,20 @@
 const COLORS = {
-    primary: "#6200ea",
-    textPrimary: "#212121",
-    textSecondary: "#757575",
-    textDark: "#424242",
-    placeholderText: "#bdbdbd",
-    background: "#fafafa",
-    cardBackground: "#ffffff",
-    inputBackground: "#f1f1f1",
-    border: "#e0e0e0",
-    white: "#ffffff",
-    black: "#000000",
-}
+  primary: "#2E7D32",
+  primaryDark: "#1B5E20",
+  primaryLight: "#4CAF50",
+  textPrimary: "#1B5E20",
+  textSecondary: "#558B2F",
+  textDark: "#1B5E20",
+  placeholderText: "#78909C",
+  background: "#F1F8E9",
+  cardBackground: "#FFFFFF",
+  inputBackground: "#F9FBE7",
+  border: "#C5E1A5",
+  white: "#FFFFFF",
+  black: "#000000",
+  error: "#D32F2F",
+  success: "#388E3C",
+  
+};
 
 export default COLORS;
