@@ -6,19 +6,21 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import styles from "../../assets/styles/login.style";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import COLORS from "../../constants/colors";
+import { useAuthStore } from "../../store/Authstore";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { login, isLoading } = useAuthStore();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -31,16 +33,10 @@ export default function Login() {
       return;
     }
 
-    setIsLoading(true);
-    try {
-      // TODO: Implement actual login logic here
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate API call
-      router.replace("/(tabs)");
-    } catch (error) {
-      alert(error.message || "Login failed");
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await login({ email, password });
+    if (!result.success) Alert.alert(result.error);
+
+    if (result.success) router.replace("/");
   };
 
   return (
