@@ -21,7 +21,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const {isLoading, register } = useAuthStore();
+  const { isLoading, register } = useAuthStore();
 
   const handleSignup = async () => {
     if (!email || !userName || !password) {
@@ -37,14 +37,14 @@ export default function Signup() {
     const result = await register({ email, userName, password });
     if (!result.success) Alert.alert("Error", result.error);
 
-    if (result.success) router.replace("/(auth)/index");
+    if (result.success) router.replace("/(tabs)/index");
   };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.select({ios: 0, android: 20})}
+      keyboardVerticalOffset={Platform.select({ ios: 0, android: 20 })}
     >
       <View style={styles.container}>
         <View style={styles.card}>
@@ -157,4 +157,3 @@ export default function Signup() {
     </KeyboardAvoidingView>
   );
 }
-
