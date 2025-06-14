@@ -10,13 +10,12 @@ import {
 } from "react-native";
 import styles from "../../assets/styles/login.style";
 import { useState } from "react";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import COLORS from "../../constants/colors";
 import { useAuthStore } from "../../store/Authstore";
 
 export default function Login() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,11 +32,10 @@ export default function Login() {
       return;
     }
 
-    const result = await login({ email, password });
-    if (!result.success) Alert.alert(result.error);
-
-    if (result.success) router.replace("/");
-  };
+    const result = await login(email, password);
+    if (!result.success) alert(result.error);
+    
+    if (result.success) router.replace("/(tabs)/index");};
 
   return (
     <KeyboardAvoidingView
