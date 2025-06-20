@@ -11,7 +11,7 @@ export const useAuthStore = create((set) => ({
     try {
       const storedUser = await AsyncStorage.getItem("user");
       const storedToken = await AsyncStorage.getItem("token");
-      
+
       if (storedUser && storedToken) {
         set({
           user: JSON.parse(storedUser),
